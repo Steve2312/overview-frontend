@@ -37,7 +37,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   if (Navigator.canPop(context))
                     const SizedBox(
-                      width: 15,
+                      width: 30,
                     ),
                   Text(
                     title,
