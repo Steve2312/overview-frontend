@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overview/screens/home.dart';
 import 'package:overview/themes/light_theme.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const App());
@@ -11,6 +12,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarBrightness: Theme.of(context).brightness,
+      ),
+    );
+
     return MaterialApp(
       theme: lightTheme,
       home: const Home(),
