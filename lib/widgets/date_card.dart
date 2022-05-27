@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'head_line_2.dart';
-import 'sub_title_1.dart';
-
 class DateCard extends StatelessWidget {
   const DateCard({
     Key? key,
@@ -22,48 +19,60 @@ class DateCard extends StatelessWidget {
           ),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  "20",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(color: Colors.white),
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SubTitle1(
-                    text: "Friday 3 February 2022",
+      child: Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      "43",
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
                   ),
-                  HeadLine2(text: "2022-02-03"),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Pending activities: 10",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        Text(
+                          "Wednesday 31 November 2022",
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ],
-          ),
-          IconTheme(
-              data: Theme.of(context).iconTheme,
-              child: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
-              ))
-        ],
+            ),
+            IconTheme(
+                data: Theme.of(context).iconTheme,
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 15,
+                ))
+          ],
+        ),
       ),
     );
   }
