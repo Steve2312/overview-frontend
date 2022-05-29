@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:overview/screens/settings.dart';
+import 'package:overview/providers/date_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../models/date.dart';
 import '../widgets/activity_today.dart';
 import '../widgets/app_header.dart';
 import '../widgets/date_card.dart';
@@ -8,22 +10,15 @@ import '../widgets/date_card.dart';
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
-  void navigateToSettings(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Settings(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    List<Date> dates = Provider.of<DateProvider>(context).dates;
+
     return Scaffold(
       appBar: AppHeader(
         title: "Overview",
         icon: GestureDetector(
-          onTap: () => navigateToSettings(context),
+          onTap: () => Navigator.pushNamed(context, "settings"),
           child: IconTheme(
             data: Theme.of(context).appBarTheme.iconTheme!,
             child: const Icon(Icons.settings),
@@ -60,44 +55,14 @@ class Home extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyText1,
           ),
           const SizedBox(height: 15),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
-          const DateCard(),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: dates.length,
+            itemBuilder: (context, index) => DateCard(
+              date: dates[index],
+            ),
+          )
         ],
       ),
     );

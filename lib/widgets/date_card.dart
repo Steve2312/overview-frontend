@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../models/date.dart';
+
 class DateCard extends StatelessWidget {
   const DateCard({
     Key? key,
+    required this.date,
   }) : super(key: key);
+
+  final Date date;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,7 @@ class DateCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    "43",
+                    "${date.total}",
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(
                           color: Colors.white,
                         ),
@@ -48,11 +53,11 @@ class DateCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Pending activities: 10",
+                        "Pending activities: ${date.remaining}",
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       Text(
-                        "Wednesday 31 November 2022",
+                        date.date,
                         style: Theme.of(context).textTheme.headline2!.copyWith(
                               overflow: TextOverflow.ellipsis,
                             ),
