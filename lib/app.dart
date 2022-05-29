@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:overview/providers/activities_provider.dart';
 import 'package:overview/providers/date_provider.dart';
 import 'package:overview/screens/activities.dart';
 import 'package:overview/screens/home.dart';
@@ -34,7 +35,14 @@ class App extends StatelessWidget {
         routes: {
           "home": (context) => const Home(),
           "settings": (context) => const Settings(),
-          "activities": (context) => const Activities(),
+          "activities": (context) => MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) => ActivitiesProvider(),
+                  )
+                ],
+                child: const Activities(),
+              ),
         },
       ),
     );

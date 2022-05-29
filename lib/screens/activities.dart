@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:overview/providers/activities_provider.dart';
 import 'package:overview/widgets/app_header.dart';
+import 'package:provider/provider.dart';
 
+import '../models/activity.dart';
 import '../models/date.dart';
 
 class Activities extends StatelessWidget {
@@ -9,6 +12,12 @@ class Activities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Date date = ModalRoute.of(context)!.settings.arguments as Date;
+
+    List<Activity> activities =
+        Provider.of<ActivitiesProvider>(context).activities;
+
+    Provider.of<ActivitiesProvider>(context, listen: false)
+        .loadActivities(date.date);
 
     return Scaffold(
       appBar: AppHeader(
@@ -38,8 +47,11 @@ class Activities extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(30),
-        itemCount: 0,
-        itemBuilder: (context, index) => Container(),
+        itemCount: activities.length,
+        itemBuilder: (context, index) => Text(
+          activities[index].name,
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
     );
   }
