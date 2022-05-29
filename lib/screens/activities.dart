@@ -1,63 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:overview/widgets/app_header.dart';
+
+import '../models/date.dart';
 
 class Activities extends StatelessWidget {
   const Activities({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Date date = ModalRoute.of(context)!.settings.arguments as Date;
+
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 120,
+      appBar: AppHeader(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
-              "23 MAY 2022",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-              ),
+              date.formattedDate,
+              style: Theme.of(context).textTheme.subtitle1,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
               "Activities",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.headline1,
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Text(
-              "10 remaining activities",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              "${date.remaining} out of ${date.total} activities remaining",
+              style: Theme.of(context).textTheme.bodyText1,
             ),
           ],
         ),
-        backgroundColor: const Color(0xFFFBFAFA),
-        elevation: 0.5,
-        centerTitle: false,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(17),
-        children: const [
-          Text(
-            "10 remaining activities",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+      body: ListView.builder(
+        padding: const EdgeInsets.all(30),
+        itemCount: 0,
+        itemBuilder: (context, index) => Container(),
       ),
     );
   }

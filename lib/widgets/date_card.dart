@@ -12,69 +12,78 @@ class DateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 15,
-      ),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1,
-            color: Colors.black.withOpacity(0.2),
-          ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, "activities", arguments: date);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    "${date.total}",
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Pending activities: ${date.remaining}",
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      Text(
-                        date.date,
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 1,
+              color: Colors.black.withOpacity(0.2),
             ),
           ),
-          IconTheme(
-              data: Theme.of(context).iconTheme,
-              child: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
-              ))
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      "${date.total}",
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Pending activities: ${date.remaining}",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        const SizedBox(
+                          height: 2,
+                        ),
+                        Text(
+                          date.formattedDate,
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconTheme(
+                data: Theme.of(context).iconTheme,
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 15,
+                ))
+          ],
+        ),
       ),
     );
   }

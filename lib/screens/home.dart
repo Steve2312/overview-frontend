@@ -16,7 +16,10 @@ class Home extends StatelessWidget {
 
     return Scaffold(
       appBar: AppHeader(
-        title: "Overview",
+        title: Text(
+          "Overview",
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+        ),
         icon: GestureDetector(
           onTap: () => Navigator.pushNamed(context, "settings"),
           child: IconTheme(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overview/providers/date_provider.dart';
+import 'package:overview/screens/activities.dart';
 import 'package:overview/screens/home.dart';
 import 'package:overview/screens/settings.dart';
 import 'package:overview/themes/light_theme.dart';
@@ -32,7 +33,8 @@ class App extends StatelessWidget {
         initialRoute: "home",
         routes: {
           "home": (context) => const Home(),
-          "settings": (context) => const Settings()
+          "settings": (context) => const Settings(),
+          "activities": (context) => const Activities(),
         },
       ),
     );

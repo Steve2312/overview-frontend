@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   const AppHeader({Key? key, required this.title, this.icon}) : super(key: key);
 
-  final String title;
+  final Widget? title;
   final Widget? icon;
 
   @override
@@ -39,10 +39,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     const SizedBox(
                       width: 30,
                     ),
-                  Text(
-                    title,
-                    style: Theme.of(context).appBarTheme.titleTextStyle,
-                  ),
+                  if (title != null) title!,
                 ],
               ),
               if (icon != null) icon!,
@@ -54,5 +51,5 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(132);
 }
