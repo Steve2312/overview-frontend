@@ -28,32 +28,36 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (Navigator.canPop(context))
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => Navigator.pop(context),
-                      child: Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: IconTheme(
-                          data: Theme.of(context).iconTheme,
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (Navigator.canPop(context))
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => Navigator.pop(context),
+                        child: Padding(
+                          padding: const EdgeInsets.all(30),
+                          child: IconTheme(
+                            data: Theme.of(context).iconTheme,
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                            ),
                           ),
                         ),
                       ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 30,
+                          horizontal: Navigator.canPop(context) ? 0 : 30,
+                        ),
+                        child: title,
+                      ),
                     ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 30,
-                      horizontal: Navigator.canPop(context) ? 0 : 30,
-                    ),
-                    child: title,
-                  ),
-                ],
+                  ],
+                ),
               ),
               if (icon != null)
                 GestureDetector(
@@ -76,5 +80,5 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(132);
+  Size get preferredSize => const Size.fromHeight(150);
 }

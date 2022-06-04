@@ -131,8 +131,7 @@ class _ActivityCardState extends State<ActivityCard>
                           Expanded(
                             child: Text(
                               widget.activity.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              overflow: TextOverflow.visible,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline2
@@ -174,6 +173,7 @@ class _ActivityCardState extends State<ActivityCard>
                     right: 15,
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (widget.activity.description != null)
                         Text(
@@ -184,7 +184,8 @@ class _ActivityCardState extends State<ActivityCard>
                         const SizedBox(
                           height: 15,
                         ),
-                      Row(
+                      Wrap(
+                        spacing: 15,
                         children: [
                           if (widget.activity.googleMapsUrl != null)
                             OutlinedButton.icon(
@@ -198,10 +199,6 @@ class _ActivityCardState extends State<ActivityCard>
                                 size: 20,
                               ),
                               label: const Text("Google Maps"),
-                            ),
-                          if (widget.activity.googleMapsUrl != null)
-                            const SizedBox(
-                              width: 15,
                             ),
                           OutlinedButton.icon(
                             onPressed: () {

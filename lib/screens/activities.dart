@@ -40,6 +40,7 @@ class _ActivitiesState extends State<Activities> {
     return Scaffold(
       appBar: AppHeader(
         title: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
