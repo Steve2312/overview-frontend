@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
@@ -8,12 +9,28 @@ import '../models/activity.dart';
 
 class ActivitiesProvider extends ChangeNotifier {
   List<Activity> activities = [];
+  bool isFetching = false;
 
   void loadActivities(String date) {
+    resetActivities();
+    setIsFetching(true);
     fetchActivities(date).then((activities) {
       this.activities = activities;
       notifyListeners();
+      setIsFetching(false);
+    }).catchError((e) {
+      setIsFetching(false);
     });
+  }
+
+  void resetActivities() {
+    activities = [];
+    notifyListeners();
+  }
+
+  void setIsFetching(bool fetching) {
+    isFetching = fetching;
+    notifyListeners();
   }
 
   Future fetchActivities(String date) async {
@@ -25,5 +42,10 @@ class ActivitiesProvider extends ChangeNotifier {
 
     List<dynamic> decodedDates = decodedResponse["data"];
     return decodedDates.map((activity) => Activity.fromJson(activity)).toList();
+  }
+
+  void toggleFinished(Activity activity) {
+    activity.finished = !activity.finished;
+    notifyListeners();
   }
 }

@@ -17,16 +17,17 @@ class DateCard extends StatelessWidget {
         Navigator.pushNamed(context, "activities", arguments: date);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 15,
-        ),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 1,
-              color: Colors.black.withOpacity(0.2),
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).appBarTheme.shadowColor!,
+              offset: const Offset(0, 0),
+              blurRadius: 10,
             ),
-          ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,13 +40,14 @@ class DateCard extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       "${date.total}",
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            fontWeight: FontWeight.bold,
                           ),
                     ),
                   ),

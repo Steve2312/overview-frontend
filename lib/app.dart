@@ -5,6 +5,7 @@ import 'package:overview/providers/date_provider.dart';
 import 'package:overview/screens/activities.dart';
 import 'package:overview/screens/home.dart';
 import 'package:overview/screens/settings.dart';
+import 'package:overview/themes/dark_theme.dart';
 import 'package:overview/themes/light_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -20,29 +21,23 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarBrightness: Theme.of(context).brightness,
+      const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
       ),
     );
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => DateProvider()),
+        ChangeNotifierProvider(create: (context) => ActivitiesProvider()),
       ],
       child: MaterialApp(
-        theme: lightTheme,
+        theme: darkTheme,
         initialRoute: "home",
         routes: {
           "home": (context) => const Home(),
           "settings": (context) => const Settings(),
-          "activities": (context) => MultiProvider(
-                providers: [
-                  ChangeNotifierProvider(
-                    create: (context) => ActivitiesProvider(),
-                  )
-                ],
-                child: const Activities(),
-              ),
+          "activities": (context) => const Activities(),
         },
       ),
     );

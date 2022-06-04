@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData.light().copyWith(
-  primaryColor: const Color(0xff1D99FF),
+  primaryColor: const Color(0xffFE5858),
   backgroundColor: Colors.white,
+  scaffoldBackgroundColor: Colors.white,
   cardColor: const Color(0xffFE5858),
   textTheme: TextTheme(
     headline1: const TextStyle(
@@ -27,13 +28,15 @@ ThemeData lightTheme = ThemeData.light().copyWith(
     ),
   ),
   appBarTheme: const AppBarTheme().copyWith(
-      backgroundColor: Colors.white,
-      titleTextStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-      iconTheme: const IconThemeData(
-        color: Colors.black,
-      )),
+    backgroundColor: Colors.white,
+    titleTextStyle: const TextStyle(
+      color: Colors.black,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    iconTheme: const IconThemeData(
+      color: Colors.black,
+    ),
+    shadowColor: Colors.black.withOpacity(0.1),
+  ),
 );

@@ -6,15 +6,17 @@ part 'activity.g.dart';
 class Activity {
   int id;
   String name;
+  String? description;
   bool finished;
-  String? googleMapsId;
+  String? googleMapsUrl;
   String date;
 
   Activity(
     this.id,
     this.name,
+    this.description,
     this.finished,
-    this.googleMapsId,
+    this.googleMapsUrl,
     this.date,
   );
 

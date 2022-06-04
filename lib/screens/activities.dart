@@ -1,23 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:overview/providers/activities_provider.dart';
+import 'package:overview/widgets/activity_card.dart';
+import 'package:overview/widgets/add_activity_button.dart';
 import 'package:overview/widgets/app_header.dart';
 import 'package:provider/provider.dart';
 
 import '../models/activity.dart';
 import '../models/date.dart';
+import '../widgets/loading_indicator.dart';
 
-class Activities extends StatelessWidget {
+class Activities extends StatefulWidget {
   const Activities({Key? key}) : super(key: key);
+
+  @override
+  State<Activities> createState() => _ActivitiesState();
+}
+
+class _ActivitiesState extends State<Activities> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      Date date = ModalRoute.of(context)!.settings.arguments as Date;
+      Provider.of<ActivitiesProvider>(context, listen: false)
+          .loadActivities(date.date);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Date date = ModalRoute.of(context)!.settings.arguments as Date;
 
-    List<Activity> activities =
-        Provider.of<ActivitiesProvider>(context).activities;
+    ActivitiesProvider activitiesProvider =
+        Provider.of<ActivitiesProvider>(context);
 
-    Provider.of<ActivitiesProvider>(context, listen: false)
-        .loadActivities(date.date);
+    List<Activity> activities = activitiesProvider.activities;
+    bool isFetching = activitiesProvider.isFetching;
 
     return Scaffold(
       appBar: AppHeader(
@@ -33,7 +51,7 @@ class Activities extends StatelessWidget {
             ),
             Text(
               "Activities",
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).appBarTheme.titleTextStyle,
             ),
             const SizedBox(
               height: 5,
@@ -44,14 +62,22 @@ class Activities extends StatelessWidget {
             ),
           ],
         ),
+        icon: const Icon(Icons.more_vert_rounded),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(30),
-        itemCount: activities.length,
-        itemBuilder: (context, index) => Text(
-          activities[index].name,
-          style: Theme.of(context).textTheme.headline1,
-        ),
+      floatingActionButton: const AddActivityButton(),
+      body: Stack(
+        children: [
+          ListView.separated(
+            padding: const EdgeInsets.all(30),
+            itemCount: activities.length,
+            itemBuilder: (context, index) =>
+                ActivityCard(activity: activities[index]),
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 15,
+            ),
+          ),
+          if (isFetching) const LoadingIndicator(),
+        ],
       ),
     );
   }

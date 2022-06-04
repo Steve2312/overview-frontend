@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,11 +9,22 @@ import '../models/date.dart';
 
 class DateProvider extends ChangeNotifier {
   List<Date> dates = [];
+  bool isFetching = false;
 
   DateProvider() {
+    setIsFetching(true);
     fetchDates().then((dates) {
       this.dates = dates;
+      notifyListeners();
+      setIsFetching(false);
+    }).catchError((e) {
+      setIsFetching(false);
     });
+  }
+
+  void setIsFetching(bool fetching) {
+    isFetching = fetching;
+    notifyListeners();
   }
 
   Future fetchDates() async {
