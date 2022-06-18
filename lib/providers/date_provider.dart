@@ -12,6 +12,10 @@ class DateProvider extends ChangeNotifier {
   bool isFetching = false;
 
   DateProvider() {
+    loadDates();
+  }
+
+  void loadDates() {
     setIsFetching(true);
     fetchDates().then((dates) {
       this.dates = dates;
