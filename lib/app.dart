@@ -8,7 +8,9 @@ import 'package:overview/screens/settings.dart';
 import 'package:overview/themes/dark_theme.dart';
 import 'package:overview/themes/light_theme.dart';
 import 'package:flutter/services.dart';
+import 'package:overview/widgets/activity_editor.dart';
 import 'package:provider/provider.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");

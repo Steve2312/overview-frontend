@@ -1,17 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overview/providers/activities_provider.dart';
 import 'package:overview/providers/date_provider.dart';
 import 'package:overview/themes/dark_theme.dart';
 import 'package:provider/provider.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import '../models/activity.dart';
 import 'activity_editor_text_field.dart';
 
 class ActivityEditor extends StatefulWidget {
-  const ActivityEditor({Key? key, this.activity}) : super(key: key);
+  const ActivityEditor({Key? key, this.activity, this.googleShare})
+      : super(key: key);
 
   final Activity? activity;
+  final String? googleShare;
 
   @override
   State<ActivityEditor> createState() => _ActivityEditorState();
@@ -30,6 +35,14 @@ class _ActivityEditorState extends State<ActivityEditor> {
 
     if (widget.activity != null) {
       //  Patch Request
+    }
+
+    if (widget.googleShare != null) {
+      LineSplitter lineSplitter = LineSplitter();
+      List<String> lines = lineSplitter.convert(widget.googleShare!);
+
+      _nameController.text = lines[0];
+      _googleMapsURLController.text = lines[lines.length - 1];
     }
   }
 
