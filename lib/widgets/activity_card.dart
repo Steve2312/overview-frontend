@@ -175,19 +175,22 @@ class _ActivityCardState extends State<ActivityCard>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.activity.description != null)
+                      if (widget.activity.description != null &&
+                          widget.activity.description != "")
                         Text(
                           widget.activity.description!,
                           style: Theme.of(context).textTheme.bodyText1,
                         ),
-                      if (widget.activity.description != null)
+                      if (widget.activity.description != null &&
+                          widget.activity.description != "")
                         const SizedBox(
                           height: 15,
                         ),
                       Wrap(
                         spacing: 15,
                         children: [
-                          if (widget.activity.googleMapsUrl != null)
+                          if (widget.activity.googleMapsUrl != null &&
+                              widget.activity.googleMapsUrl != "")
                             OutlinedButton.icon(
                               onPressed: () {
                                 openGoogleMaps();

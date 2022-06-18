@@ -48,4 +48,17 @@ class ActivitiesProvider extends ChangeNotifier {
     activity.finished = !activity.finished;
     notifyListeners();
   }
+
+  Future putActivity(Activity activity) async {
+    Client client = Client();
+    Uri url = Uri.parse("${dotenv.env["API_URL"]!}/activities");
+    Response response = await client.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(activity),
+    );
+    print(response.body.toString());
+  }
 }
