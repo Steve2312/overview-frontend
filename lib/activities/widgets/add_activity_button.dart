@@ -7,21 +7,21 @@ class AddActivityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
+    return FloatingActionButton(
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         showModalBottomSheet(
-            backgroundColor: Colors.transparent,
-            enableDrag: false,
-            isScrollControlled: true,
-            isDismissible: false,
-            context: context,
-            builder: (context) {
-              return const ActivityEditor();
-            });
+          backgroundColor: Colors.transparent,
+          enableDrag: false,
+          isScrollControlled: true,
+          isDismissible: false,
+          context: context,
+          builder: (context) {
+            return const ActivityEditor();
+          },
+        );
       },
-      icon: const Icon(Icons.add),
-      label: const Text("Activity"),
+      child: const Icon(Icons.add),
     );
   }
 }

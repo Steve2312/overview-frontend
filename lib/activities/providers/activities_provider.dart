@@ -25,6 +25,10 @@ class ActivitiesProvider extends ChangeNotifier {
     });
   }
 
+  void reloadActivities() {
+    loadActivities(date);
+  }
+
   void resetActivities() {
     activities = [];
     notifyListeners();

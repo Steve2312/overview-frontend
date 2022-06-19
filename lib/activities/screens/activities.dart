@@ -10,6 +10,7 @@ import '../../shared/widgets/loading_indicator.dart';
 import '../models/activity.dart';
 import '../widgets/activity_card.dart';
 import '../widgets/add_activity_button.dart';
+import 'activity_editor.dart';
 
 class Activities extends StatefulWidget {
   const Activities({Key? key}) : super(key: key);
@@ -63,11 +64,30 @@ class _ActivitiesState extends State<Activities> {
       }
     }
 
-    void editButtonOnTap(Activity activity) async {}
+    void editButtonOnTap(Activity activity) async {
+      showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        enableDrag: false,
+        isScrollControlled: true,
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return ActivityEditor(
+            activity: activity,
+          );
+        },
+      );
+    }
 
     void radioButtonOnTap(Activity activity) async {
       await activitiesProvider.toggleFinished(activity);
       dateProvider.loadDates();
+    }
+
+    if (activities.isEmpty && !isFetching) {
+      Future.delayed(Duration.zero, () {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      });
     }
 
     return Scaffold(

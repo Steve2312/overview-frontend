@@ -36,6 +36,10 @@ class _ActivityEditorState extends State<ActivityEditor> {
   void initState() {
     super.initState();
 
+    if (widget.activity != null) {
+      autoFillFromActivity(widget.activity!);
+    }
+
     if (widget.googleShare != null) {
       autoFillFromGoogleShare(widget.googleShare!);
     }
@@ -47,6 +51,19 @@ class _ActivityEditorState extends State<ActivityEditor> {
 
     _nameController.text = lines.first;
     _googleMapsURLController.text = lines.last;
+  }
+
+  void autoFillFromActivity(Activity activity) {
+    _nameController.text = activity.name;
+    _dateController.text = activity.date;
+
+    if (activity.description != null) {
+      _descriptionController.text = activity.description!;
+    }
+
+    if (activity.googleMapsUrl != null) {
+      _googleMapsURLController.text = activity.googleMapsUrl!;
+    }
   }
 
   @override
@@ -61,13 +78,26 @@ class _ActivityEditorState extends State<ActivityEditor> {
       var date = _dateController.text;
 
       if (name.isNotEmpty && date.isNotEmpty) {
-        Activity activity =
-            Activity(0, name, description, false, googleMapsUrl, date);
+        var editMode = widget.activity != null;
 
-        activitiesProvider.putActivity(activity).then((value) {
-          Navigator.pop(context);
-          dateProvider.loadDates();
-        });
+        if (editMode) {
+          Activity activity = Activity(widget.activity!.id, name, description,
+              widget.activity!.finished, googleMapsUrl, date);
+          activitiesProvider.patchActivity(activity).then((value) {
+            Navigator.pop(context);
+            dateProvider.loadDates();
+            activitiesProvider.reloadActivities();
+          });
+        } else {
+          Activity activity =
+              Activity(0, name, description, false, googleMapsUrl, date);
+
+          activitiesProvider.putActivity(activity).then((value) {
+            Navigator.pop(context);
+            dateProvider.loadDates();
+            activitiesProvider.reloadActivities();
+          });
+        }
       }
 
       if (name.isEmpty || date.isEmpty) {
@@ -93,7 +123,7 @@ class _ActivityEditorState extends State<ActivityEditor> {
               Padding(
                 padding: const EdgeInsets.all(30),
                 child: Text(
-                  "Add activity",
+                  widget.activity == null ? "Add activity" : "Edit activity",
                   style: Theme.of(context).textTheme.headline1,
                 ),
               ),
