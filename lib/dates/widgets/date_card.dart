@@ -40,11 +40,13 @@ class DateCard extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: date.remaining == 0
+                          ? Theme.of(context).primaryColor.withOpacity(0.2)
+                          : Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      "${date.total}",
+                      "${date.remaining}",
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             fontWeight: FontWeight.bold,
@@ -59,7 +61,7 @@ class DateCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Pending activities: ${date.remaining}",
+                          "Total activities: ${date.total}",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         const SizedBox(
