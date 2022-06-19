@@ -9,11 +9,13 @@ import '../models/activity.dart';
 
 class ActivitiesProvider extends ChangeNotifier {
   List<Activity> activities = [];
+  late String date;
   bool isFetching = false;
 
   void loadActivities(String date) {
     resetActivities();
     setIsFetching(true);
+    this.date = date;
     fetchActivities(date).then((activities) {
       this.activities = activities;
       notifyListeners();
@@ -37,6 +39,7 @@ class ActivitiesProvider extends ChangeNotifier {
     Client client = Client();
     Uri url = Uri.parse("${dotenv.env["API_URL"]!}/activities?date=$date");
     Response response = await client.get(url);
+    client.close();
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
@@ -44,9 +47,11 @@ class ActivitiesProvider extends ChangeNotifier {
     return decodedDates.map((activity) => Activity.fromJson(activity)).toList();
   }
 
-  void toggleFinished(Activity activity) {
+  Future toggleFinished(Activity activity) async {
     activity.finished = !activity.finished;
     notifyListeners();
+
+    await patchActivity(activity);
   }
 
   Future putActivity(Activity activity) async {
@@ -59,6 +64,21 @@ class ActivitiesProvider extends ChangeNotifier {
       },
       body: jsonEncode(activity),
     );
-    print(response.body.toString());
+    client.close();
   }
+
+  Future patchActivity(Activity activity) async {
+    Client client = Client();
+    Uri url = Uri.parse("${dotenv.env["API_URL"]!}/activities/${activity.id}");
+    Response response = await client.patch(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(activity),
+    );
+    client.close();
+  }
+
+  void updateRemainingCount() {}
 }

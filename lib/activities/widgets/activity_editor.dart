@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:overview/providers/activities_provider.dart';
-import 'package:overview/providers/date_provider.dart';
-import 'package:overview/themes/dark_theme.dart';
+import 'package:overview/activities/providers/activities_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import '../../dates/providers/date_provider.dart';
+import '../../shared/themes/dark_theme.dart';
 import '../models/activity.dart';
 import 'activity_editor_text_field.dart';
 

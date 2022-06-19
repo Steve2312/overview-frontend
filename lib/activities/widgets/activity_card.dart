@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:overview/providers/activities_provider.dart';
+import 'package:overview/activities/providers/activities_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../dates/providers/date_provider.dart';
 import '../models/activity.dart';
 
 class ActivityCard extends StatefulWidget {
@@ -44,6 +44,7 @@ class _ActivityCardState extends State<ActivityCard>
       curve: Curves.easeInOut,
     );
 
+    // Expand widget if widget is not finished
     if (!widget.activity.finished) {
       _controller.value = _controller.upperBound;
       isExpanded = true;
@@ -68,6 +69,14 @@ class _ActivityCardState extends State<ActivityCard>
   Widget build(BuildContext context) {
     ActivitiesProvider activitiesProvider =
         Provider.of<ActivitiesProvider>(context);
+
+    DateProvider dateProvider =
+        Provider.of<DateProvider>(context, listen: false);
+
+    _toggleFinished() async {
+      await activitiesProvider.toggleFinished(widget.activity);
+      dateProvider.loadDates();
+    }
 
     return AnimatedOpacity(
       opacity: widget.activity.finished ? 0.6 : 1,
@@ -96,7 +105,7 @@ class _ActivityCardState extends State<ActivityCard>
                     if (!widget.activity.finished && isExpanded) {
                       _toggleContainer();
                     }
-                    activitiesProvider.toggleFinished(widget.activity);
+                    _toggleFinished();
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(

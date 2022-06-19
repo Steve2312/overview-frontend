@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:overview/widgets/activity_editor.dart';
+
+import 'activity_editor.dart';
 
 class AddActivityButton extends StatelessWidget {
   const AddActivityButton({Key? key}) : super(key: key);

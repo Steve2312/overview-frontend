@@ -1,19 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:overview/providers/date_provider.dart';
-import 'package:overview/widgets/add_activity_button.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import '../../activities/widgets/activity_editor.dart';
+import '../../activities/widgets/add_activity_button.dart';
+import '../../shared/widgets/app_header.dart';
+import '../../shared/widgets/loading_indicator.dart';
 import '../models/date.dart';
-import '../widgets/activity_editor.dart';
-import '../widgets/app_header.dart';
+import '../providers/date_provider.dart';
 import '../widgets/date_card.dart';
-import '../widgets/loading_indicator.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+class Dates extends StatelessWidget {
+  const Dates({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:overview/providers/activities_provider.dart';
-import 'package:overview/widgets/activity_card.dart';
-import 'package:overview/widgets/add_activity_button.dart';
-import 'package:overview/widgets/app_header.dart';
+import 'package:overview/activities/providers/activities_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../dates/models/date.dart';
+import '../../shared/widgets/app_header.dart';
+import '../../shared/widgets/loading_indicator.dart';
+import '../widgets/activity_card.dart';
 import '../models/activity.dart';
-import '../models/date.dart';
-import '../widgets/loading_indicator.dart';
+import '../widgets/add_activity_button.dart';
 
 class Activities extends StatefulWidget {
   const Activities({Key? key}) : super(key: key);
@@ -37,6 +37,22 @@ class _ActivitiesState extends State<Activities> {
     List<Activity> activities = activitiesProvider.activities;
     bool isFetching = activitiesProvider.isFetching;
 
+    int _getRemainingActivities() {
+      if (activities.isNotEmpty) {
+        return activities.where((activity) => !activity.finished).length;
+      }
+
+      return date.remaining;
+    }
+
+    int _getTotalActivities() {
+      if (activities.isNotEmpty) {
+        return activities.length;
+      }
+
+      return date.total;
+    }
+
     return Scaffold(
       appBar: AppHeader(
         title: Column(
@@ -58,7 +74,7 @@ class _ActivitiesState extends State<Activities> {
               height: 5,
             ),
             Text(
-              "${date.remaining} out of ${date.total} activities remaining",
+              "${_getRemainingActivities()} out of ${_getTotalActivities()} activities remaining",
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ],

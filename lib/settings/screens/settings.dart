@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/app_header.dart';
+import '../../shared/widgets/app_header.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);

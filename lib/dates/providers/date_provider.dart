@@ -35,7 +35,7 @@ class DateProvider extends ChangeNotifier {
     Client client = Client();
     Uri url = Uri.parse("${dotenv.env["API_URL"]!}/activities/dates");
     Response response = await client.get(url);
-
+    client.close();
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
     List<dynamic> decodedDates = decodedResponse["data"];
