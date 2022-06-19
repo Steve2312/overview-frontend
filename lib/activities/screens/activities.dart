@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:overview/activities/providers/activities_provider.dart';
+import 'package:overview/dates/providers/date_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../dates/models/date.dart';
 import '../../shared/widgets/app_header.dart';
 import '../../shared/widgets/loading_indicator.dart';
-import '../widgets/activity_card.dart';
 import '../models/activity.dart';
+import '../widgets/activity_card.dart';
 import '../widgets/add_activity_button.dart';
 
 class Activities extends StatefulWidget {
@@ -29,13 +31,12 @@ class _ActivitiesState extends State<Activities> {
 
   @override
   Widget build(BuildContext context) {
-    Date date = ModalRoute.of(context)!.settings.arguments as Date;
+    var activitiesProvider = Provider.of<ActivitiesProvider>(context);
+    var dateProvider = Provider.of<DateProvider>(context);
+    var date = ModalRoute.of(context)!.settings.arguments as Date;
 
-    ActivitiesProvider activitiesProvider =
-        Provider.of<ActivitiesProvider>(context);
-
-    List<Activity> activities = activitiesProvider.activities;
-    bool isFetching = activitiesProvider.isFetching;
+    var activities = activitiesProvider.activities;
+    var isFetching = activitiesProvider.isFetching;
 
     int _getRemainingActivities() {
       if (activities.isNotEmpty) {
@@ -51,6 +52,22 @@ class _ActivitiesState extends State<Activities> {
       }
 
       return date.total;
+    }
+
+    void googleMapsOnTap(Activity activity) async {
+      Uri url = Uri.parse(activity.googleMapsUrl!);
+      bool canLaunch = await canLaunchUrl(url);
+
+      if (canLaunch) {
+        launchUrl(url, mode: LaunchMode.externalApplication);
+      }
+    }
+
+    void editButtonOnTap(Activity activity) async {}
+
+    void radioButtonOnTap(Activity activity) async {
+      await activitiesProvider.toggleFinished(activity);
+      dateProvider.loadDates();
     }
 
     return Scaffold(
@@ -87,8 +104,12 @@ class _ActivitiesState extends State<Activities> {
           ListView.separated(
             padding: const EdgeInsets.all(30),
             itemCount: activities.length,
-            itemBuilder: (context, index) =>
-                ActivityCard(activity: activities[index]),
+            itemBuilder: (context, index) => ActivityCard(
+              activity: activities[index],
+              googleMapsOnTap: () => googleMapsOnTap(activities[index]),
+              editButtonOnTap: () => editButtonOnTap(activities[index]),
+              radioButtonOnTap: () => radioButtonOnTap(activities[index]),
+            ),
             separatorBuilder: (context, index) => const SizedBox(
               height: 15,
             ),

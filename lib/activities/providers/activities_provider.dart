@@ -79,6 +79,4 @@ class ActivitiesProvider extends ChangeNotifier {
     );
     client.close();
   }
-
-  void updateRemainingCount() {}
 }

@@ -8,11 +8,14 @@ import 'package:provider/provider.dart';
 import '../../dates/providers/date_provider.dart';
 import '../../shared/themes/dark_theme.dart';
 import '../models/activity.dart';
-import 'activity_editor_text_field.dart';
+import '../widgets/activity_editor_text_field.dart';
 
 class ActivityEditor extends StatefulWidget {
-  const ActivityEditor({Key? key, this.activity, this.googleShare})
-      : super(key: key);
+  const ActivityEditor({
+    Key? key,
+    this.activity,
+    this.googleShare,
+  }) : super(key: key);
 
   final Activity? activity;
   final String? googleShare;
@@ -22,50 +25,55 @@ class ActivityEditor extends StatefulWidget {
 }
 
 class _ActivityEditorState extends State<ActivityEditor> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _googleMapsURLController =
-      TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _googleMapsURLController = TextEditingController();
+  final _dateController = TextEditingController();
+
+  bool _showRequiredFields = false;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.activity != null) {
-      //  Patch Request
-    }
-
     if (widget.googleShare != null) {
-      LineSplitter lineSplitter = LineSplitter();
-      List<String> lines = lineSplitter.convert(widget.googleShare!);
-
-      _nameController.text = lines[0];
-      _googleMapsURLController.text = lines[lines.length - 1];
+      autoFillFromGoogleShare(widget.googleShare!);
     }
+  }
+
+  void autoFillFromGoogleShare(String sharedValue) {
+    var lineSplitter = const LineSplitter();
+    var lines = lineSplitter.convert(sharedValue);
+
+    _nameController.text = lines.first;
+    _googleMapsURLController.text = lines.last;
   }
 
   @override
   Widget build(BuildContext context) {
-    ActivitiesProvider activitiesProvider =
-        Provider.of<ActivitiesProvider>(context);
+    var activitiesProvider = Provider.of<ActivitiesProvider>(context);
+    var dateProvider = Provider.of<DateProvider>(context);
 
-    void onSave() async {
-      if (_nameController.text.isNotEmpty && _dateController.text.isNotEmpty) {
-        Activity activity = Activity(
-          0,
-          _nameController.text,
-          _descriptionController.text,
-          false,
-          _googleMapsURLController.text,
-          _dateController.text,
-        );
-        await activitiesProvider.putActivity(activity).then(
-          (value) {
-            Navigator.pop(context);
-            Provider.of<DateProvider>(context, listen: false).loadDates();
-          },
-        ).catchError((e) => print(e));
+    void saveOnTap() async {
+      var name = _nameController.text;
+      var description = _descriptionController.text;
+      var googleMapsUrl = _googleMapsURLController.text;
+      var date = _dateController.text;
+
+      if (name.isNotEmpty && date.isNotEmpty) {
+        Activity activity =
+            Activity(0, name, description, false, googleMapsUrl, date);
+
+        activitiesProvider.putActivity(activity).then((value) {
+          Navigator.pop(context);
+          dateProvider.loadDates();
+        });
+      }
+
+      if (name.isEmpty || date.isEmpty) {
+        setState(() {
+          _showRequiredFields = true;
+        });
       }
     }
 
@@ -109,8 +117,12 @@ class _ActivityEditorState extends State<ActivityEditor> {
               padding: const EdgeInsets.all(30),
               children: [
                 Text(
-                  "Name",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  "Name * ",
+                  style: _showRequiredFields && _nameController.text.isEmpty
+                      ? Theme.of(context).textTheme.subtitle1?.copyWith(
+                            color: Colors.redAccent,
+                          )
+                      : Theme.of(context).textTheme.subtitle1,
                 ),
                 ActivityEditorTextField(
                   textEditingController: _nameController,
@@ -145,8 +157,12 @@ class _ActivityEditorState extends State<ActivityEditor> {
                   height: 30,
                 ),
                 Text(
-                  "Date",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  "Date * ",
+                  style: _showRequiredFields && _dateController.text.isEmpty
+                      ? Theme.of(context).textTheme.subtitle1?.copyWith(
+                            color: Colors.redAccent,
+                          )
+                      : Theme.of(context).textTheme.subtitle1,
                 ),
                 TextField(
                   controller: _dateController,
@@ -185,9 +201,7 @@ class _ActivityEditorState extends State<ActivityEditor> {
                   height: 30,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    onSave();
-                  },
+                  onPressed: () => saveOnTap(),
                   style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
                   child: Text(

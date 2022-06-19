@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:overview/activities/providers/activities_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../../dates/providers/date_provider.dart';
 import '../models/activity.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({
     Key? key,
     required this.activity,
+    required this.radioButtonOnTap,
+    required this.googleMapsOnTap,
+    required this.editButtonOnTap,
   }) : super(key: key);
 
   final Activity activity;
+  final Function radioButtonOnTap;
+  final Function googleMapsOnTap;
+  final Function editButtonOnTap;
 
   @override
   State<ActivityCard> createState() => _ActivityCardState();
@@ -20,13 +21,6 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard>
     with TickerProviderStateMixin {
-  void openGoogleMaps() async {
-    Uri url = Uri.parse(widget.activity.googleMapsUrl!);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
-  }
-
   bool isExpanded = false;
 
   late AnimationController _controller;
@@ -35,6 +29,7 @@ class _ActivityCardState extends State<ActivityCard>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -51,7 +46,7 @@ class _ActivityCardState extends State<ActivityCard>
     }
   }
 
-  _toggleContainer() {
+  void _toggleContainer() {
     if (_animation.status != AnimationStatus.completed) {
       _controller.forward();
       setState(() {
@@ -67,17 +62,6 @@ class _ActivityCardState extends State<ActivityCard>
 
   @override
   Widget build(BuildContext context) {
-    ActivitiesProvider activitiesProvider =
-        Provider.of<ActivitiesProvider>(context);
-
-    DateProvider dateProvider =
-        Provider.of<DateProvider>(context, listen: false);
-
-    _toggleFinished() async {
-      await activitiesProvider.toggleFinished(widget.activity);
-      dateProvider.loadDates();
-    }
-
     return AnimatedOpacity(
       opacity: widget.activity.finished ? 0.6 : 1,
       duration: const Duration(milliseconds: 200),
@@ -105,7 +89,7 @@ class _ActivityCardState extends State<ActivityCard>
                     if (!widget.activity.finished && isExpanded) {
                       _toggleContainer();
                     }
-                    _toggleFinished();
+                    widget.radioButtonOnTap();
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -202,7 +186,7 @@ class _ActivityCardState extends State<ActivityCard>
                               widget.activity.googleMapsUrl != "")
                             OutlinedButton.icon(
                               onPressed: () {
-                                openGoogleMaps();
+                                widget.googleMapsOnTap();
                               },
                               style:
                                   Theme.of(context).outlinedButtonTheme.style,
@@ -214,7 +198,7 @@ class _ActivityCardState extends State<ActivityCard>
                             ),
                           OutlinedButton.icon(
                             onPressed: () {
-                              openGoogleMaps();
+                              widget.editButtonOnTap();
                             },
                             style: Theme.of(context).outlinedButtonTheme.style,
                             icon: const Icon(

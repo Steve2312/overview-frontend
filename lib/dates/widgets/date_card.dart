@@ -81,11 +81,12 @@ class DateCard extends StatelessWidget {
               ),
             ),
             IconTheme(
-                data: Theme.of(context).iconTheme,
-                child: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 15,
-                ))
+              data: Theme.of(context).iconTheme,
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 15,
+              ),
+            ),
           ],
         ),
       ),

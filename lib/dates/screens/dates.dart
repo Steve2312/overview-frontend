@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
-import '../../activities/widgets/activity_editor.dart';
+import '../../activities/screens/activity_editor.dart';
 import '../../activities/widgets/add_activity_button.dart';
 import '../../shared/widgets/app_header.dart';
 import '../../shared/widgets/loading_indicator.dart';
@@ -20,27 +20,6 @@ class Dates extends StatelessWidget {
     DateProvider dateProvider = Provider.of<DateProvider>(context);
     List<Date> dates = dateProvider.dates;
     bool isFetching = dateProvider.isFetching;
-
-    List<String> parseGoogleShare(String value) {
-      LineSplitter ls = const LineSplitter();
-      List<String> lines = ls.convert(value);
-      return lines;
-    }
-
-    ReceiveSharingIntent.getTextStream().listen((String value) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      showModalBottomSheet(
-          backgroundColor: Colors.transparent,
-          enableDrag: false,
-          isScrollControlled: true,
-          isDismissible: false,
-          context: context,
-          builder: (context) {
-            return ActivityEditor(
-              googleShare: value,
-            );
-          });
-    });
 
     return Scaffold(
       appBar: AppHeader(
