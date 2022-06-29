@@ -83,4 +83,11 @@ class ActivitiesProvider extends ChangeNotifier {
     );
     client.close();
   }
+
+  Future deleteActivity(Activity activity) async {
+    Client client = Client();
+    Uri url = Uri.parse("${dotenv.env["API_URL"]!}/activities/${activity.id}");
+    Response response = await client.delete(url);
+    client.close();
+  }
 }

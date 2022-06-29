@@ -107,6 +107,14 @@ class _ActivityEditorState extends State<ActivityEditor> {
       }
     }
 
+    void deleteOnTap() {
+      activitiesProvider.deleteActivity(widget.activity!).then((value) {
+        Navigator.pop(context);
+        dateProvider.loadDates();
+        activitiesProvider.reloadActivities();
+      });
+    }
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.90,
       decoration: BoxDecoration(
@@ -233,7 +241,8 @@ class _ActivityEditorState extends State<ActivityEditor> {
                 ElevatedButton(
                   onPressed: () => saveOnTap(),
                   style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor),
+                    primary: Theme.of(context).primaryColor,
+                  ),
                   child: Text(
                     "Save",
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(
@@ -242,6 +251,23 @@ class _ActivityEditorState extends State<ActivityEditor> {
                         ),
                   ),
                 ),
+                const SizedBox(
+                  height: 15,
+                ),
+                if (widget.activity != null)
+                  ElevatedButton(
+                    onPressed: () => deleteOnTap(),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                    ),
+                    child: Text(
+                      "Delete",
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
               ],
             ),
           )
