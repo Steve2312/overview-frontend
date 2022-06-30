@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'activity.g.dart';
@@ -24,4 +25,9 @@ class Activity {
       _$ActivityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActivityToJson(this);
+
+  get formattedDate {
+    DateTime dateTime = DateTime.parse(date);
+    return DateFormat('d MMMM y').format(dateTime);
+  }
 }

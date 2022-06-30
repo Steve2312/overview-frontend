@@ -1,6 +1,6 @@
-# overview
+# overview_frontend
 
-Plan your travels using Overview
+Overview Frontend a mobile application using Flutter and is an activity planner to make organising for vacations easier.
 
 ## Getting Started
 

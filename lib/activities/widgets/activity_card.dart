@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/activity.dart';
 
 class ActivityCard extends StatefulWidget {
@@ -20,7 +21,7 @@ class ActivityCard extends StatefulWidget {
 }
 
 class _ActivityCardState extends State<ActivityCard>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool isExpanded = false;
 
   late AnimationController _controller;
@@ -219,4 +220,7 @@ class _ActivityCardState extends State<ActivityCard>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

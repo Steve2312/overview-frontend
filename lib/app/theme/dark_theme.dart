@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Background color for app & scaffoldBackground
 Color appBarBackgroundColor = const Color(0xFF2A2B2D);
 Color backgroundColor = const Color(0xFF202123);
 Color cardColor = const Color(0xFF2A2B2D);
@@ -15,6 +14,8 @@ Color shadowColor = Colors.black.withOpacity(0.2);
 
 Color hintColor = Colors.white54;
 Color labelColor = Colors.white;
+
+Brightness brightness = Brightness.dark;
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
   primaryColor: primaryColor,

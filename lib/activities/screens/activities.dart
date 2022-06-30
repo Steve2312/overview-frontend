@@ -1,94 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:overview/activities/providers/activities_provider.dart';
-import 'package:overview/dates/providers/date_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../dates/models/date.dart';
-import '../../shared/widgets/app_header.dart';
-import '../../shared/widgets/loading_indicator.dart';
+import '../../app/widgets/app_header.dart';
+import '../../app/widgets/loading_indicator.dart';
 import '../models/activity.dart';
+import '../providers/activity_provider.dart';
 import '../widgets/activity_card.dart';
-import '../widgets/add_activity_button.dart';
-import 'activity_editor.dart';
 
-class Activities extends StatefulWidget {
+class Activities extends StatelessWidget {
   const Activities({Key? key}) : super(key: key);
 
   @override
-  State<Activities> createState() => _ActivitiesState();
-}
-
-class _ActivitiesState extends State<Activities> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      Date date = ModalRoute.of(context)!.settings.arguments as Date;
-      Provider.of<ActivitiesProvider>(context, listen: false)
-          .loadActivities(date.date);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var activitiesProvider = Provider.of<ActivitiesProvider>(context);
-    var dateProvider = Provider.of<DateProvider>(context);
-    var date = ModalRoute.of(context)!.settings.arguments as Date;
+    ActivityProvider activityProvider = Provider.of<ActivityProvider>(context);
 
-    var activities = activitiesProvider.activities;
-    var isFetching = activitiesProvider.isFetching;
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
-    int _getRemainingActivities() {
-      if (activities.isNotEmpty) {
-        return activities.where((activity) => !activity.finished).length;
-      }
-
-      return date.remaining;
-    }
-
-    int _getTotalActivities() {
-      if (activities.isNotEmpty) {
-        return activities.length;
-      }
-
-      return date.total;
-    }
-
-    void googleMapsOnTap(Activity activity) async {
-      Uri url = Uri.parse(activity.googleMapsUrl!);
-      bool canLaunch = await canLaunchUrl(url);
-
-      if (canLaunch) {
-        launchUrl(url, mode: LaunchMode.externalApplication);
-      }
-    }
-
-    void editButtonOnTap(Activity activity) async {
-      showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        enableDrag: false,
-        isScrollControlled: true,
-        isDismissible: false,
-        context: context,
-        builder: (context) {
-          return ActivityEditor(
-            activity: activity,
-          );
-        },
-      );
-    }
-
-    void radioButtonOnTap(Activity activity) async {
-      await activitiesProvider.toggleFinished(activity);
-      dateProvider.loadDates();
-    }
-
-    if (activities.isEmpty && !isFetching) {
-      Future.delayed(Duration.zero, () {
-        Navigator.popUntil(context, (route) => route.isFirst);
-      });
-    }
+    String date = arguments["date"];
+    List<Activity> activities = activityProvider.activityMap[date]!;
+    bool isFetching = activityProvider.isFetching;
+    int remaining = activities.where((activity) => !activity.finished).length;
 
     return Scaffold(
       appBar: AppHeader(
@@ -97,7 +30,7 @@ class _ActivitiesState extends State<Activities> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              date.formattedDate,
+              activities.first.formattedDate,
               style: Theme.of(context).textTheme.subtitle1,
             ),
             const SizedBox(
@@ -111,14 +44,13 @@ class _ActivitiesState extends State<Activities> {
               height: 5,
             ),
             Text(
-              "${_getRemainingActivities()} out of ${_getTotalActivities()} activities remaining",
+              "$remaining out of ${activities.length} activities remaining",
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ],
         ),
         icon: const Icon(Icons.more_vert_rounded),
       ),
-      floatingActionButton: const AddActivityButton(),
       body: Stack(
         children: [
           ListView.separated(
@@ -126,9 +58,23 @@ class _ActivitiesState extends State<Activities> {
             itemCount: activities.length,
             itemBuilder: (context, index) => ActivityCard(
               activity: activities[index],
-              googleMapsOnTap: () => googleMapsOnTap(activities[index]),
-              editButtonOnTap: () => editButtonOnTap(activities[index]),
-              radioButtonOnTap: () => radioButtonOnTap(activities[index]),
+              googleMapsOnTap: () async {
+                String? googleMapsUrl = activities[index].googleMapsUrl;
+                if (googleMapsUrl != null) {
+                  Uri url = Uri.parse(googleMapsUrl);
+                  bool canLaunch = await canLaunchUrl(url);
+
+                  if (canLaunch) {
+                    launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                }
+              },
+              editButtonOnTap: () => {},
+              radioButtonOnTap: () {
+                Activity activity = activities[index];
+                activity.finished = !activity.finished;
+                activityProvider.edit(activity);
+              },
             ),
             separatorBuilder: (context, index) => const SizedBox(
               height: 15,

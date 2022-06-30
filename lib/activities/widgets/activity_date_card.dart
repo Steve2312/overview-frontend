@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../models/date.dart';
-
-class DateCard extends StatelessWidget {
-  const DateCard({
+class ActivityDateCard extends StatelessWidget {
+  const ActivityDateCard({
     Key? key,
     required this.date,
+    required this.total,
+    required this.remaining,
+    this.onTap,
   }) : super(key: key);
 
-  final Date date;
+  final String date;
+  final int total;
+  final int remaining;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, "activities", arguments: date);
+        if (onTap != null) {
+          onTap!();
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(15),
@@ -40,13 +46,13 @@ class DateCard extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: date.remaining == 0
+                      color: remaining == 0
                           ? Theme.of(context).primaryColor.withOpacity(0.2)
                           : Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      "${date.remaining}",
+                      "$remaining",
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             fontWeight: FontWeight.bold,
@@ -61,14 +67,14 @@ class DateCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Total activities: ${date.total}",
+                          "Total activities: $total",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         const SizedBox(
                           height: 2,
                         ),
                         Text(
-                          date.formattedDate,
+                          date,
                           style:
                               Theme.of(context).textTheme.headline2!.copyWith(
                                     overflow: TextOverflow.ellipsis,
