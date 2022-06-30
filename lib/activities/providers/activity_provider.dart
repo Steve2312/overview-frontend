@@ -36,9 +36,14 @@ class ActivityProvider extends ChangeNotifier {
   }
 
   Future<void> edit(Activity activity) async {
-    Activity updatedActivity = await patchActivity(activity);
-    // Update activity locally
-    fetch();
+    updateActivityMap(activity);
+    // Save Activity Map Locally
+    try {
+      // Try to save if online
+      Activity updatedActivity = await patchActivity(activity);
+    } catch (error) {
+      // if offline show offline message
+    }
   }
 
   SplayTreeMap<String, List<Activity>> _mapActivitiesByDate(
@@ -55,5 +60,15 @@ class ActivityProvider extends ChangeNotifier {
     }
 
     return map;
+  }
+
+  void updateActivityMap(Activity activity) {
+    List<Activity> activities = activityMap[activity.date]!;
+    int index = activities.indexWhere((a) => a.id == activity.id);
+
+    if (index != -1) {
+      activities[index] = activity;
+      notifyListeners();
+    }
   }
 }

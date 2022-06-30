@@ -10,6 +10,9 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool backButtonVisible = Navigator.canPop(context) &&
+        ModalRoute.of(context)!.settings.name != "home";
+
     return PreferredSize(
       preferredSize: preferredSize,
       child: Container(
@@ -33,7 +36,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (Navigator.canPop(context))
+                    if (backButtonVisible)
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () => Navigator.pop(context),
@@ -51,7 +54,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                           vertical: 30,
-                          horizontal: Navigator.canPop(context) ? 0 : 30,
+                          horizontal: backButtonVisible ? 0 : 30,
                         ),
                         child: title,
                       ),
