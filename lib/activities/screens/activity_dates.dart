@@ -17,7 +17,7 @@ class ActivityDates extends StatelessWidget {
     ActivityProvider activityProvider = Provider.of<ActivityProvider>(context);
     SplayTreeMap<String, List<Activity>> activityMap =
         activityProvider.activityMap;
-    bool isFetching = activityProvider.isFetching;
+    bool isFetching = activityProvider.fetching;
 
     return Scaffold(
       appBar: AppHeader(

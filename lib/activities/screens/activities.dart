@@ -20,7 +20,7 @@ class Activities extends StatelessWidget {
 
     String date = arguments["date"];
     List<Activity> activities = activityProvider.activityMap[date]!;
-    bool isFetching = activityProvider.isFetching;
+    bool isFetching = activityProvider.fetching;
     int remaining = activities.where((activity) => !activity.finished).length;
 
     return Scaffold(

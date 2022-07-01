@@ -1,38 +1,52 @@
 import 'dart:collection';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:overview_frontend/activities/services/activity_service.dart';
 
 import '../models/activity.dart';
 
 class ActivityProvider extends ChangeNotifier {
-  bool isFetching = false;
-  SplayTreeMap<String, List<Activity>> activityMap =
-      SplayTreeMap<String, List<Activity>>();
+  var activityMap = SplayTreeMap<String, List<Activity>>();
+  var fetching = false;
+  var online = false;
 
   ActivityProvider() {
-    fetch();
+    _checkOnline().then((online) {
+      online ? synchronize() : loadActivitiesFromLocal();
+      _setOnlineListener((bool online) {
+        _setOnline(online);
+        if (online) synchronize();
+      });
+    });
   }
 
-  Future<void> fetch() async {
-    isFetching = true;
-    notifyListeners();
-
+  Future<void> synchronize() async {
     try {
-      List<Activity> activities = await getActivities();
-      activityMap = _mapActivitiesByDate(activities);
-    } catch (error) {
-      // Show toaster
-    }
+      _setFetching(true);
 
-    isFetching = false;
-    notifyListeners();
+      List<Activity> activities = await getActivities();
+
+      // compare local with get
+      // post all activities with later last edited
+      // save locally
+      saveActivitiesToLocal(activities);
+      // initialize map
+      activityMap = _mapActivitiesByDate(activities);
+    } finally {
+      _setFetching(false);
+    }
+  }
+
+  Future<void> loadActivitiesFromLocal() async {
+    List<Activity> activities = await getActivitiesFromLocal();
+    activityMap = _mapActivitiesByDate(activities);
   }
 
   Future<void> create(Activity activity) async {
     Activity createdActivity = await putActivity(activity);
     // Update activity locally
-    fetch();
+    synchronize();
   }
 
   Future<void> edit(Activity activity) async {
@@ -70,5 +84,26 @@ class ActivityProvider extends ChangeNotifier {
       activities[index] = activity;
       notifyListeners();
     }
+  }
+
+  void _setFetching(bool fetching) {
+    this.fetching = fetching;
+    notifyListeners();
+  }
+
+  void _setOnline(bool online) {
+    this.online = online;
+    notifyListeners();
+  }
+
+  Future<bool> _checkOnline() async {
+    ConnectivityResult result = await Connectivity().checkConnectivity();
+    return result != ConnectivityResult.none;
+  }
+
+  void _setOnlineListener(Function onChange) {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      onChange(result != ConnectivityResult.none);
+    });
   }
 }

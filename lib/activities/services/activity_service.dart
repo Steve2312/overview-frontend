@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:overview_frontend/activities/models/activity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+String _key = "activities";
 Client _client = Client();
 Map<String, String> _headers = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -57,4 +59,25 @@ List<Activity> _parseActivities(String responseBody) {
   return activitiesJson
       .map((activityJson) => Activity.fromJson(activityJson))
       .toList();
+}
+
+Future<void> saveActivitiesToLocal(List<Activity> activities) async {
+  final prefs = await SharedPreferences.getInstance();
+  String activitiesJson = jsonEncode(activities);
+  await prefs.setString(_key, activitiesJson);
+}
+
+Future<List<Activity>> getActivitiesFromLocal() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  String? json = prefs.getString(_key);
+
+  if (json != null) {
+    List<dynamic> activitiesJson = jsonDecode(json);
+    return activitiesJson
+        .map((activityJson) => Activity.fromJson(activityJson))
+        .toList();
+  }
+
+  return [];
 }
