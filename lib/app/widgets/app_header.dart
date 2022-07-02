@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../activities/providers/activity_provider.dart';
+import 'network_status_banner.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   const AppHeader({Key? key, required this.title, this.icon, this.iconOnClick})
@@ -86,19 +87,12 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     ),
                 ],
               ),
-              if (!activityProvider.online)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 15,
-                  ),
-                  width: double.infinity,
-                  color: Theme.of(context).primaryColor.withOpacity(0.2),
-                  child: Text(
-                    "You are offline",
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                )
+              if (!activityProvider.online || activityProvider.synchronizing)
+                NetworkStatusBanner(
+                  message: activityProvider.synchronizing
+                      ? "Synchronizing local activities"
+                      : "You are offline",
+                ),
             ],
           ),
         ),

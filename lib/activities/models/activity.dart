@@ -5,12 +5,13 @@ part 'activity.g.dart';
 
 @JsonSerializable()
 class Activity {
-  int id;
+  int? id;
   String name;
   String? description;
   bool finished;
   String? googleMapsUrl;
   String date;
+  String lastEdited;
 
   Activity(
     this.id,
@@ -19,6 +20,7 @@ class Activity {
     this.finished,
     this.googleMapsUrl,
     this.date,
+    this.lastEdited,
   );
 
   factory Activity.fromJson(Map<String, dynamic> json) =>

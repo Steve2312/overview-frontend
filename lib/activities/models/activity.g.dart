@@ -13,6 +13,7 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
       json['finished'] as bool,
       json['googleMapsUrl'] as String?,
       json['date'] as String,
+      json['lastEdited'] as String,
     );
 
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
       'finished': instance.finished,
       'googleMapsUrl': instance.googleMapsUrl,
       'date': instance.date,
+      'lastEdited': instance.lastEdited,
     };

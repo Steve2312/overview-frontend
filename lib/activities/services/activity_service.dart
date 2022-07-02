@@ -67,6 +67,19 @@ Future<void> saveActivitiesToLocal(List<Activity> activities) async {
   await prefs.setString(_key, activitiesJson);
 }
 
+Future<void> addActivityToLocal(Activity activity) async {
+  List<Activity> activities = await getActivitiesFromLocal();
+  activities.add(activity);
+  await saveActivitiesToLocal(activities);
+}
+
+Future<void> updateActivityInLocal(Activity activity) async {
+  List<Activity> activities = await getActivitiesFromLocal();
+  int index = activities.indexWhere((a) => a.id == activity.id);
+  activities[index] = activity;
+  await saveActivitiesToLocal(activities);
+}
+
 Future<List<Activity>> getActivitiesFromLocal() async {
   final prefs = await SharedPreferences.getInstance();
 

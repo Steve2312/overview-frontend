@@ -9,6 +9,7 @@ import '../models/activity.dart';
 class ActivityProvider extends ChangeNotifier {
   var activityMap = SplayTreeMap<String, List<Activity>>();
   var fetching = false;
+  var synchronizing = false;
   var online = false;
 
   ActivityProvider() {
@@ -24,23 +25,54 @@ class ActivityProvider extends ChangeNotifier {
   Future<void> synchronize() async {
     try {
       _setFetching(true);
+      _setSynchronizing(true);
 
       List<Activity> activities = await getActivities();
+      List<Activity> localActivities = await getActivitiesFromLocal();
 
-      // compare local with get
-      // post all activities with later last edited
-      // save locally
-      saveActivitiesToLocal(activities);
-      // initialize map
-      activityMap = _mapActivitiesByDate(activities);
+      await patchLocalActivities(activities, localActivities);
+      await putLocalActivities(localActivities);
+
+      List<Activity> activitiesAfterSync = await getActivities();
+
+      activityMap = _mapActivitiesByDate(activitiesAfterSync);
+      saveActivitiesToLocal(activitiesAfterSync);
     } finally {
       _setFetching(false);
+      _setSynchronizing(false);
+    }
+  }
+
+  Future<void> patchLocalActivities(
+    List<Activity> activities,
+    List<Activity> localActivities,
+  ) async {
+    for (var activity in activities) {
+      var index = localActivities.indexWhere((e) => e.id == activity.id);
+      if (index != -1) {
+        var localActivity = localActivities[index];
+        var serverLastEdited = BigInt.parse(activity.lastEdited);
+        var localLastEdited = BigInt.parse(localActivity.lastEdited);
+
+        if (localLastEdited > serverLastEdited) {
+          await patchActivity(localActivity);
+        }
+      }
+    }
+  }
+
+  Future<void> putLocalActivities(List<Activity> localActivities) async {
+    for (var activity in localActivities) {
+      if (activity.id == null) {
+        await putActivity(activity);
+      }
     }
   }
 
   Future<void> loadActivitiesFromLocal() async {
     List<Activity> activities = await getActivitiesFromLocal();
     activityMap = _mapActivitiesByDate(activities);
+    notifyListeners();
   }
 
   Future<void> create(Activity activity) async {
@@ -50,13 +82,16 @@ class ActivityProvider extends ChangeNotifier {
   }
 
   Future<void> edit(Activity activity) async {
-    updateActivityMap(activity);
-    // Save Activity Map Locally
     try {
-      // Try to save if online
+      updateActivityMap(activity);
+
       Activity updatedActivity = await patchActivity(activity);
-    } catch (error) {
-      // if offline show offline message
+
+      updateActivityInLocal(updatedActivity);
+      updateActivityMap(updatedActivity);
+    } catch (err) {
+      activity.lastEdited = DateTime.now().millisecondsSinceEpoch.toString();
+      updateActivityInLocal(activity);
     }
   }
 
@@ -88,6 +123,11 @@ class ActivityProvider extends ChangeNotifier {
 
   void _setFetching(bool fetching) {
     this.fetching = fetching;
+    notifyListeners();
+  }
+
+  void _setSynchronizing(bool synchronizing) {
+    this.synchronizing = synchronizing;
     notifyListeners();
   }
 
