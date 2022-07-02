@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:overview_frontend/activities/models/activity.dart';
+import 'package:overview_frontend/activities/screens/activity_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String _key = "activities";
@@ -93,4 +95,19 @@ Future<List<Activity>> getActivitiesFromLocal() async {
   }
 
   return [];
+}
+
+void openEditor(BuildContext context, Activity? activity) {
+  showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    enableDrag: false,
+    isScrollControlled: true,
+    isDismissible: false,
+    context: context,
+    builder: (context) {
+      return ActivityEditor(
+        activity: activity,
+      );
+    },
+  );
 }

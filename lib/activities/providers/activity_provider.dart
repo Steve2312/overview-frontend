@@ -95,6 +95,8 @@ class ActivityProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> delete(Activity activity) async {}
+
   SplayTreeMap<String, List<Activity>> _mapActivitiesByDate(
       List<Activity> activities) {
     SplayTreeMap<String, List<Activity>> map =

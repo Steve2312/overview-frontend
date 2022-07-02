@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:overview_frontend/activities/providers/activity_provider.dart';
+import 'package:overview_frontend/activities/widgets/activity_add_button.dart';
 import 'package:overview_frontend/app/widgets/app_header.dart';
 import 'package:provider/provider.dart';
 
@@ -86,6 +87,7 @@ class ActivityDates extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: const ActivityAddButton(),
     );
   }
 }

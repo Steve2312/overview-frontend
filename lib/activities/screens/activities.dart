@@ -6,6 +6,8 @@ import '../../app/widgets/app_header.dart';
 import '../../app/widgets/loading_indicator.dart';
 import '../models/activity.dart';
 import '../providers/activity_provider.dart';
+import '../services/activity_service.dart';
+import '../widgets/activity_add_button.dart';
 import '../widgets/activity_card.dart';
 
 class Activities extends StatelessWidget {
@@ -69,7 +71,9 @@ class Activities extends StatelessWidget {
                   }
                 }
               },
-              editButtonOnTap: () => {},
+              editButtonOnTap: () {
+                openEditor(context, activities[index]);
+              },
               radioButtonOnTap: () {
                 Activity activity = activities[index];
                 activity.finished = !activity.finished;
@@ -83,6 +87,7 @@ class Activities extends StatelessWidget {
           if (isFetching) const LoadingIndicator(),
         ],
       ),
+      floatingActionButton: const ActivityAddButton(),
     );
   }
 }
