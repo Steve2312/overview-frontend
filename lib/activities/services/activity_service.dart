@@ -75,10 +75,16 @@ Future<void> addActivityToLocal(Activity activity) async {
   await saveActivitiesToLocal(activities);
 }
 
-Future<void> updateActivityInLocal(Activity activity) async {
+Future<void> editActivityInLocal(Activity activity) async {
   List<Activity> activities = await getActivitiesFromLocal();
   int index = activities.indexWhere((a) => a.id == activity.id);
   activities[index] = activity;
+  await saveActivitiesToLocal(activities);
+}
+
+Future<void> deleteActivityInLocal(Activity activity) async {
+  List<Activity> activities = await getActivitiesFromLocal();
+  activities.removeWhere((e) => e.id == activity.id);
   await saveActivitiesToLocal(activities);
 }
 

@@ -21,6 +21,7 @@ class Activities extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     String date = arguments["date"];
+
     List<Activity> activities = activityProvider.activityMap[date]!;
     bool isFetching = activityProvider.fetching;
     int remaining = activities.where((activity) => !activity.finished).length;
@@ -32,7 +33,7 @@ class Activities extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              activities.first.formattedDate,
+              date,
               style: Theme.of(context).textTheme.subtitle1,
             ),
             const SizedBox(

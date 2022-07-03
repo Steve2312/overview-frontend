@@ -7,7 +7,7 @@ part of 'activity.dart';
 // **************************************************************************
 
 Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
-      json['id'] as int,
+      json['id'] as int?,
       json['name'] as String,
       json['description'] as String?,
       json['finished'] as bool,

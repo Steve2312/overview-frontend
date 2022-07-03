@@ -64,7 +64,7 @@ class ActivityDates extends StatelessWidget {
                   }).length;
 
                   return ActivityDateCard(
-                    date: activities.first.formattedDate,
+                    date: date,
                     total: activities.length,
                     remaining: remaining,
                     onTap: () {

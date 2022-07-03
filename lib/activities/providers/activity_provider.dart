@@ -76,9 +76,14 @@ class ActivityProvider extends ChangeNotifier {
   }
 
   Future<void> create(Activity activity) async {
-    Activity createdActivity = await putActivity(activity);
-    // Update activity locally
-    synchronize();
+    try {
+      Activity createdActivity = await putActivity(activity);
+      addActivityToLocal(createdActivity);
+      addActivityToMap(createdActivity);
+    } catch (err) {
+      activity.lastEdited = DateTime.now().millisecondsSinceEpoch.toString();
+      addActivityToMap(activity);
+    }
   }
 
   Future<void> edit(Activity activity) async {
@@ -87,15 +92,22 @@ class ActivityProvider extends ChangeNotifier {
 
       Activity updatedActivity = await patchActivity(activity);
 
-      updateActivityInLocal(updatedActivity);
+      editActivityInLocal(updatedActivity);
       updateActivityMap(updatedActivity);
     } catch (err) {
       activity.lastEdited = DateTime.now().millisecondsSinceEpoch.toString();
-      updateActivityInLocal(activity);
+      editActivityInLocal(activity);
     }
   }
 
-  Future<void> delete(Activity activity) async {}
+  Future<void> delete(Activity activity) async {
+    try {
+      deleteActivityFromMap(activity);
+      await deleteActivity(activity.id!);
+    } finally {
+      deleteActivityInLocal(activity);
+    }
+  }
 
   SplayTreeMap<String, List<Activity>> _mapActivitiesByDate(
       List<Activity> activities) {
@@ -119,6 +131,27 @@ class ActivityProvider extends ChangeNotifier {
 
     if (index != -1) {
       activities[index] = activity;
+      notifyListeners();
+    }
+  }
+
+  void addActivityToMap(Activity activity) {
+    List<Activity>? activities = activityMap[activity.date];
+    activities ??= [];
+
+    activities.add(activity);
+    activities.sort((a, b) => a.name.compareTo(b.name));
+
+    activityMap[activity.date] = activities;
+
+    notifyListeners();
+  }
+
+  void deleteActivityFromMap(Activity activity) {
+    List<Activity> activities = activityMap[activity.date]!;
+    int index = activities.indexWhere((a) => a.id == activity.id);
+    if (index != -1) {
+      activities.removeAt(index);
       notifyListeners();
     }
   }
